@@ -1,7 +1,7 @@
 # chrono_gpst
-Dead simple extension for [chrono](https://docs.rs/chrono/latest/chrono/) to convert to and from GPS Standard Time, with or without leap seconds.
+Dead simple extension for [chrono](https://docs.rs/chrono/latest/chrono/) to convert to and from GPS Time (GPST), with or without leap seconds.
 
-GPS Standard time began at the "GPS Epoch" on January 6, 1980. It is typically represented as a "week" (since GPS Epoch) and "week seconds" that have elapsed in said week.
+GPS Time begins at the "GPS Epoch" on January 6, 1980. It is typically represented as a "week" (since GPS Epoch) and "week seconds" that have elapsed in said week.
 ## Usage
 ```rust
 use chrono_gpst::{from_gpst, GpstLike};

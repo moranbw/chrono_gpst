@@ -1,10 +1,10 @@
 [package]
 name = "chrono_gpst"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Brian Moran <dev@moran.network>"]
 license = "MIT"
-description = "Chrono conversion utils for GPS Standard Time."
+description = "Chrono conversion utils for GPS Time (GPST)."
 readme = "./README.md"
 homepage = "https://github.com/moranbw/chrono_gpst"
 repository = "https://github.com/moranbw/chrono_gpst"
@@ -13,4 +13,4 @@ categories = ["date-and-time"]
 
 [dependencies]
 chrono = "0.4"
-thiserror = "2.0.3"
+thiserror = "2"
