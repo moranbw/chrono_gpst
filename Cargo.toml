@@ -1,0 +1,16 @@
+[package]
+name = "chrono_gpst"
+version = "0.1.0"
+edition = "2021"
+authors = ["Brian Moran <dev@moran.network>"]
+license = "MIT"
+description = "Chrono conversion utils for GPS Standard Time."
+readme = "./README.md"
+homepage = "https://github.com/moranbw/chrono_gpst"
+repository = "https://github.com/moranbw/chrono_gpst"
+keywords = ["time", "timezone", "geospatial", "gps"]
+categories = ["date-and-time"]
+
+[dependencies]
+chrono = "0.4.38"
+thiserror = "2.0.3"
