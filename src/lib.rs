@@ -55,11 +55,11 @@ const NANOSECONDS_PER_WEEK: f64 = SECONDS_PER_WEEK * TO_NANO_FLOAT;
 #[derive(Debug, PartialEq)]
 pub struct Gpst {
     /// Seconds since GPS Epoch
-    seconds: f64,
+    pub seconds: f64,
     /// Weeks since GPS Epoch
-    week: i64,
+    pub week: i64,
     /// Seconds in current week
-    week_seconds: f64,
+    pub week_seconds: f64,
 }
 
 //Trait that extends [`chrono::DateTime`] / [`chrono::Utc`] for GPS Time (GPST).
