@@ -12,5 +12,5 @@ keywords = ["time", "timezone", "geospatial", "gps"]
 categories = ["date-and-time"]
 
 [dependencies]
-chrono = "0.4.38"
+chrono = "0.4"
 thiserror = "2.0.3"

@@ -1,3 +1,35 @@
+/*!
+Dead simple extension for [chrono](https://docs.rs/chrono/latest/chrono/) to convert to and from GPS Standard Time, with or without
+leap seconds. 
+
+GPS Standard time began at the "GPS Epoch" on January 6, 1980. It is typically represented as a "week" (since GPS Epoch)
+and "week seconds" that have elapsed in said week.
+## Usage
+```
+use chrono_gpst::{from_gpst, GpstLike};
+
+let date_time = chrono::NaiveDate::from_ymd_opt(2005, 1, 28)
+    .unwrap()
+    .and_hms_opt(13, 30, 0)
+    .unwrap()
+    .and_utc();
+let gpst_time = date_time.gpst(true).unwrap();
+/***
+ *  Seconds since GPS Epoch, Weeks since GPS Epoch, Seconds elapsed in week. Adjusted for leap seconds.
+ *  Gpst { seconds: 790954213, week: 1307, week_seconds: 480613 }
+ ***/
+let date_time = from_gpst(1307, 480613, true).unwrap();
+/***
+ *  GPST is always UTC (with drift for leap seconds, so enable that flag if needed), so we return a DateTime<Utc>.
+ *  2005-01-28T13:30:00Z
+ ***/
+```
+
+## Acknowledgements
+Adapted from PHP algorithm here: [https://www.andrews.edu/~tzs/timeconv/timealgorithm.html](https://www.andrews.edu/~tzs/timeconv/timealgorithm.html).
+Leap seconds could be added in the future, in which a new version of this crate would need to be replaced.
+*/
+
 use chrono::{DateTime, Utc};
 use thiserror::Error;
 
@@ -12,6 +44,10 @@ pub enum GpstError {
     BeforeGPSEpoch(String),
 }
 
+/// "GPS Epoch": 01-06-1980 00:00:00
+pub const GPS_EPOCH: i64 = 315964800;
+const SECONDS_PER_WEEK: f64 = 604800.0;
+
 /// GPST data
 #[derive(Debug, PartialEq)]
 pub struct Gpst {
@@ -22,10 +58,6 @@ pub struct Gpst {
     /// Seconds in current week
     week_seconds: i64,
 }
-
-/// "GPS Epoch": 01-06-1980 00:00:00
-pub const GPS_EPOCH: i64 = 315964800;
-const SECONDS_PER_WEEK: f64 = 604800.0;
 
 //Trait that extends [`chrono::DateTime`] / [`chrono::Utc`] for GPS Standard Time (GPST).
 pub trait GpstLike {
@@ -52,7 +84,7 @@ impl GpstLike for DateTime<Utc> {
     }
 }
 
-/// Given GPS seconds since GPS Epoch, convert to a DateTime<Utc>. Optionally, adjust for leap seconds.
+/// Given seconds since GPS Epoch, convert to a DateTime<Utc>. Optionally, adjust for leap seconds.
 pub fn from_gpst_seconds(mut seconds: i64, leap_seconds: bool) -> Result<DateTime<Utc>, GpstError> {
     if leap_seconds {
         seconds -= num_leaps(seconds);
@@ -61,13 +93,13 @@ pub fn from_gpst_seconds(mut seconds: i64, leap_seconds: bool) -> Result<DateTim
     Ok(date_time)
 }
 
-/// Given GPS weeks and week seconds, convert to a DateTime<Utc>. Optionally, adjust for leap seconds.
+/// Given weeks since GPS Epoch and week seconds, convert to a DateTime<Utc>. Optionally, adjust for leap seconds.
 pub fn from_gpst(
-    weeks: i64,
+    week: i64,
     week_seconds: i64,
     leap_seconds: bool,
 ) -> Result<DateTime<Utc>, GpstError> {
-    let gps_seconds = (weeks * SECONDS_PER_WEEK as i64) + week_seconds;
+    let gps_seconds = (week * SECONDS_PER_WEEK as i64) + week_seconds;
     from_gpst_seconds(gps_seconds, leap_seconds)
 }
 
@@ -109,6 +141,7 @@ mod tests {
             .and_hms_opt(13, 30, 0)
             .unwrap()
             .and_utc();
+        println!("{:?}", from_gpst(1307, 480613, true).unwrap());
         assert_eq!(from_gpst(1307, 480613, true).unwrap(), date_time)
     }
 }
