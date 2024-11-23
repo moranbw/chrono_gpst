@@ -27,7 +27,9 @@ let date_time = from_gpst(1307, 480613, true).unwrap();
 
 ## Acknowledgements
 Adapted from PHP algorithm here: [https://www.andrews.edu/~tzs/timeconv/timealgorithm.html](https://www.andrews.edu/~tzs/timeconv/timealgorithm.html).
-Leap seconds could be added in the future, in which a new version of this crate would need to be released.
+
+### Notes
+Leap seconds could be added in the future, in which a new version of this crate would need to be replaced.
 */
 
 use chrono::{DateTime, Utc};
@@ -39,7 +41,8 @@ pub enum GpstError {
     /// Error caused when provided date is earlier than GPS Epoch.
     #[error("Invalid date-time for GPST, is earlier than GPS Epoch: {0}")]
     BeforeGPSEpoch(String),
-    /// Error caused when provided date is earlier than GPS Epoch.
+    /// Error caused when provided date is not within parseable bounds.
+    /// [https://docs.rs/chrono/latest/chrono/struct.DateTime.html#method.timestamp_nanos_opt](https://docs.rs/chrono/latest/chrono/struct.DateTime.html#method.timestamp_nanos_opt)
     #[error("Could not convert date-time to nanosecond timestamp: {0}")]
     TimestampNano(String),
 }
