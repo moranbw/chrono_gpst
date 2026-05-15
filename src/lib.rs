@@ -18,7 +18,7 @@ let gpst_time = date_time.gpst(true).unwrap();
  *  Seconds since GPS Epoch, Weeks since GPS Epoch, Seconds elapsed in week. Adjusted for leap seconds.
  *  Gpst { seconds: 790954213, week: 1307, week_seconds: 480613 }
  ***/
-let date_time = from_gpst(1307, 480613, true).unwrap();
+let date_time = from_gpst(1307, 480613.0, true).unwrap();
 /***
  *  GPST is always UTC (with drift for leap seconds, so enable that flag if needed), so we return a DateTime<Utc>.
  *  2005-01-28T13:30:00Z
@@ -93,7 +93,7 @@ impl GpstLike for DateTime<Utc> {
                     week_start.to_rfc3339()
                 )))?;
         Ok(Gpst {
-            seconds: (nanoseconds / TO_NANO_INT) as f64,
+            seconds: (nanoseconds as f64 / TO_NANO_FLOAT),
             week: week as i64,
             week_seconds: (timestamp_nanos - week_start_timestamp_nanos) as f64 / TO_NANO_FLOAT,
         })
@@ -127,7 +127,7 @@ const LEAP_SECONDS: [i64; 18] = [
     1119744016, 1167264017,
 ];
 
-/// Count how many leap nanoseconds have occured since a given GPS timestamp.
+/// Count how many leap nanoseconds have occurred since a given GPS timestamp.
 fn num_leaps(gps_nanoseconds: i64) -> i64 {
     let mut count = 0;
     for leap_second in LEAP_SECONDS {
@@ -172,7 +172,7 @@ mod tests {
     #[test]
     fn print_leap_seconds() {
         for leap_second in LEAP_SECONDS {
-            let date_time = DateTime::from_timestamp(leap_second + GPS_EPOCH, 0).unwrap();
+            let date_time = DateTime::from_timestamp_nanos(leap_second + GPS_EPOCH);
             println!("{}", date_time.to_rfc3339());
         }
     }
